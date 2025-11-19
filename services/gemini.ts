@@ -1,9 +1,20 @@
 import { GoogleGenAI, Type, Schema } from "@google/genai";
-import { StoryResponse } from "../types";
+import { StoryResponse, Language } from "../types";
 
 const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
-export const generateShoeStory = async (childName: string): Promise<StoryResponse> => {
+const LANGUAGE_NAMES: Record<Language, string> = {
+  he: 'Hebrew',
+  en: 'English',
+  zh: 'Chinese (Simplified)',
+  es: 'Spanish',
+  fr: 'French',
+  ar: 'Arabic',
+  hi: 'Hindi',
+  ru: 'Russian'
+};
+
+export const generateShoeStory = async (childName: string, language: Language): Promise<StoryResponse> => {
   const schema: Schema = {
     type: Type.OBJECT,
     properties: {
@@ -30,9 +41,9 @@ export const generateShoeStory = async (childName: string): Promise<StoryRespons
     const response = await ai.models.generateContent({
       model: 'gemini-2.5-flash',
       contents: `Create a fun, interactive guide for a 5-year-old named "${childName}" on how to tie shoelaces. 
-      Language: Hebrew.
+      Language: ${LANGUAGE_NAMES[language] || 'English'}.
       Tone: Enthusiastic, simple, educational, and magical.
-      Structure the guide into 5-6 clear steps using the "Bunny Ears" (אוזני ארנב) method.
+      Structure the guide into 5-6 clear steps using the "Bunny Ears" (or equivalent local name) method.
       Make sure the "storyPart" uses metaphors (bunny, tree, cave) that match the "instruction".`,
       config: {
         responseMimeType: "application/json",

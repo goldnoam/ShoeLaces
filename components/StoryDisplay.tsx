@@ -6,9 +6,18 @@ interface StoryDisplayProps {
   story: StoryResponse;
   activeStep: number;
   onStepChange: (step: number) => void;
+  onInstructionClick?: () => void;
+  uiLabels: {
+    step: string;
+    of: string;
+    nowDoing: string;
+    clickHighlight: string;
+    prev: string;
+    next: string;
+  };
 }
 
-export const StoryDisplay: React.FC<StoryDisplayProps> = ({ story, activeStep, onStepChange }) => {
+export const StoryDisplay: React.FC<StoryDisplayProps> = ({ story, activeStep, onStepChange, onInstructionClick, uiLabels }) => {
 
   const handleNext = () => {
     if (activeStep < story.steps.length - 1) {
@@ -66,11 +75,17 @@ export const StoryDisplay: React.FC<StoryDisplayProps> = ({ story, activeStep, o
                  <span className="bg-yellow-500 text-slate-900 w-10 h-10 rounded-full flex items-center justify-center font-bold text-xl shadow-lg shadow-yellow-500/50 animate-bounce">
                    {currentStepData.stepNumber}
                  </span>
-                 <span className="text-yellow-400 font-bold text-sm">עכשיו עושים:</span>
+                 <span className="text-yellow-400 font-bold text-sm">{uiLabels.nowDoing}</span>
                </div>
-               <span className="text-sm text-slate-500">שלב {activeStep + 1} מתוך {story.steps.length}</span>
+               <span className="text-sm text-slate-500">{uiLabels.step} {activeStep + 1} {uiLabels.of} {story.steps.length}</span>
              </div>
-             <h3 className="text-2xl font-bold text-white mb-3">{currentStepData.instruction}</h3>
+             <h3 
+              onClick={onInstructionClick}
+              title={uiLabels.clickHighlight}
+              className="text-2xl font-bold text-white mb-3 cursor-pointer hover:text-yellow-300 transition-all active:scale-95 transform hover:drop-shadow-[0_0_15px_rgba(253,224,71,0.5)] active:drop-shadow-[0_0_5px_rgba(253,224,71,0.8)]"
+             >
+               {currentStepData.instruction}
+             </h3>
              <div className="bg-slate-800/50 p-4 rounded-lg border border-slate-700 shadow-inner">
                <p className="text-lg text-blue-300 leading-relaxed font-medium italic">
                  "{currentStepData.storyPart}"
@@ -84,13 +99,13 @@ export const StoryDisplay: React.FC<StoryDisplayProps> = ({ story, activeStep, o
         <button 
           onClick={handlePrev}
           disabled={activeStep === 0}
-          className={`px-6 py-3 rounded-full font-bold transition-all duration-150 transform active:scale-90 ${
+          className={`px-6 py-3 rounded-full font-bold transition-all duration-150 transform active:scale-95 ${
             activeStep === 0 
               ? 'bg-slate-700 text-slate-500 cursor-not-allowed' 
-              : 'bg-slate-700 text-blue-400 hover:bg-slate-600 shadow-md hover:shadow-lg border border-slate-600'
+              : 'bg-slate-700 text-blue-400 hover:bg-slate-600 shadow-md hover:shadow-xl border border-slate-600'
           }`}
         >
-          הקודם
+          {uiLabels.prev}
         </button>
 
         <div className="flex gap-2">
@@ -110,13 +125,13 @@ export const StoryDisplay: React.FC<StoryDisplayProps> = ({ story, activeStep, o
         <button 
           onClick={handleNext}
           disabled={activeStep === story.steps.length - 1}
-          className={`px-6 py-3 rounded-full font-bold transition-all duration-150 transform active:scale-90 ${
+          className={`px-6 py-3 rounded-full font-bold transition-all duration-150 transform active:scale-95 ${
             activeStep === story.steps.length - 1 
               ? 'bg-slate-700 text-slate-500 cursor-not-allowed' 
-              : 'bg-blue-600 text-white hover:bg-blue-500 shadow-lg hover:shadow-blue-500/40 hover:scale-105 border border-blue-500'
+              : 'bg-blue-600 text-white hover:bg-blue-500 shadow-lg hover:shadow-blue-500/50 hover:scale-105 border border-blue-500'
           }`}
         >
-          הבא
+          {uiLabels.next}
         </button>
       </div>
 

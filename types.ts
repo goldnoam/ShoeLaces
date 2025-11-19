@@ -17,3 +17,5 @@ export enum AppState {
   READY,
   ERROR
 }
+
+export type Language = 'he' | 'en' | 'zh' | 'es' | 'fr' | 'ar' | 'hi' | 'ru';
